@@ -29,13 +29,13 @@ start = time.time()
 #     columns=[f"feature_{i}" for i in range(n_features)]
 # )
 
-X_train = np.load("N_train.npy")
+X_train = np.load("N_train.npy", allow_pickle=True)
 X_train = pd.DataFrame(X_train)
-X_test = np.load("N_test.npy")
+X_test = np.load("N_test.npy", allow_pickle=True)
 X_test = pd.DataFrame(X_test)
-y_train = np.load("y_train.npy")
+y_train = np.load("y_train.npy", allow_pickle=True)
 y_train = pd.DataFrame(y_train)
-y_test = np.load("y_test.npy")
+y_test = np.load("y_test.npy", allow_pickle=True)
 # y_test = pd.DataFrame(y_test)
 
 clf = TabICLClassifier(batch_size=16)
