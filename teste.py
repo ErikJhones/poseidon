@@ -1,31 +1,47 @@
 from tabicl import TabICLClassifier
 
+import numpy as np
 import pandas as pd
-from sklearn.model_selection import train_test_split
 import time
+import torch
+import resource
+import psutil
+import os
 
-# 1. Carregar o dataset
-# Certifique-se de que o arquivo 'titanic.csv' esteja na mesma pasta do script
-df = pd.read_csv('titanic.csv')
+start = time.time()
 
-# 2. Definir as variáveis (X = características, y = alvo)
-# No Titanic, o objetivo geralmente é prever a coluna 'Survived'
-X = df.drop('Survived', axis=1) 
-y = df['Survived']
+# Reprodutibilidade
+np.random.seed(42)
 
-# 3. Dividir em Treino e Teste
-# test_size=0.2 significa que 20% dos dados serão para teste e 80% para treino
-# random_state garante que a divisão seja a mesma toda vez que você rodar o código
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+n_samples = 10000
+n_features = 100
+n_classes = 10
+# X_train: dados aleatórios contínuos
+X_train = pd.DataFrame(
+    np.random.randn(n_samples, n_features),
+    columns=[f"feature_{i}" for i in range(n_features)]
+)
+# y_train: classes inteiras de 0 a 9
+y_train = np.random.randint(0, n_classes, size=n_samples)
+
+X_test = pd.DataFrame(
+    np.random.randn(2000, n_features),
+    columns=[f"feature_{i}" for i in range(n_features)]
+)
 
 ini = time.time()
 clf = TabICLClassifier()
 clf.fit(X_train, y_train)  # downloads checkpoint on first use, otherwise cheap
-print(clf.predict(X_test))  # in-context learning happens here
-fim = time.time()
+pred = clf.predict(X_test)  # in-context learning happens here
 
-print(y_test)
-print(f"tempo: {fim-ini}")
-# reg = TabICLRegressor()
-# reg.fit(X_train, y_train)
-# reg.predict(X_test)
+
+end = time.time()
+elapsed = end - start
+peak_gpu = torch.cuda.max_memory_allocated()/1024**3
+peak_cpu = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024
+
+print("\n========= FINAL STATS =========")
+print(f"Time: {elapsed/60:.2f} min")
+print(f"Peak GPU RAM: {peak_gpu:.2f} GB")
+print(f"Peak CPU RAM: {peak_cpu:.2f} MB")
+print("===============================")
