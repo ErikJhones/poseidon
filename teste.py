@@ -30,7 +30,7 @@ X_test = pd.DataFrame(
 )
 
 ini = time.time()
-clf = TabICLClassifier(batch_size=4)
+clf = TabICLClassifier(batch_size=16)
 clf.fit(X_train, y_train)  # downloads checkpoint on first use, otherwise cheap
 pred = clf.predict(X_test)  # in-context learning happens here
 
