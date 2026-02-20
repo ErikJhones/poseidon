@@ -13,8 +13,8 @@ start = time.time()
 # Reprodutibilidade
 np.random.seed(42)
 
-n_samples = 100000
-n_features = 500
+n_samples = 10000
+n_features = 100
 n_classes = 10
 # X_train: dados aleatórios contínuos
 X_train = pd.DataFrame(
@@ -30,7 +30,7 @@ X_test = pd.DataFrame(
 )
 
 ini = time.time()
-clf = TabICLClassifier()
+clf = TabICLClassifier(batch_size=4)
 clf.fit(X_train, y_train)  # downloads checkpoint on first use, otherwise cheap
 pred = clf.predict(X_test)  # in-context learning happens here
 
