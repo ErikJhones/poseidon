@@ -6,7 +6,6 @@
 #SBATCH --time=00:01:00         # Run time (hh:mm:ss) - 1.5 hours
 #SBATCH --gres=gpu:1            # Number of GPUs to be used
 #SBATCH --qos=gpu-debug         # QOS to be used
-#SBATCH --w=poseidon         # node
 
 echo "==============================="
 echo "Job started"
