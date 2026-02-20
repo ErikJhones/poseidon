@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#SBATCH --p=a6000
+#SBATCH --partition=a6000
 #SBATCH --job-name=tabicl_test    # Job name
-#SBATCH --output="job.%x.%j.out" # Name of stdout output file (%x expands to job name and %j expands to %jobId)
+#SBATCH --output=job.%x.%j.out # Name of stdout output file (%x expands to job name and %j expands to %jobId)
 #SBATCH --time=00:01:00         # Run time (hh:mm:ss) - 1.5 hours
 #SBATCH --gres=gpu:1            # Number of GPUs to be used
 #SBATCH --qos=gpu-debug         # QOS to be used
