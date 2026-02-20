@@ -13,7 +13,7 @@ start = time.time()
 # Reprodutibilidade
 np.random.seed(42)
 
-n_samples = 10000
+n_samples = 6400
 n_features = 100
 n_classes = 10
 # X_train: dados aleatórios contínuos
