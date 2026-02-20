@@ -18,7 +18,7 @@ echo "==============================="
 START_TIME=$(date +%s)
 
 # Rodar código Python
-python3 teste.py
+python3 test.py
 
 # End timer
 END_TIME=$(date +%s)
