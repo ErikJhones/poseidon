@@ -33,7 +33,7 @@ def mae(y_true, y_pred):
 
 for dataset in ['concrete', 'energy', 'housing', 'power',  'yacht']:
     print(dataset)
-    df_np = np.loadtxt(f'/uci/{dataset}/data/data.txt')
+    df_np = np.loadtxt(f'./uci/{dataset}/data/data.txt')
     classe = pd.DataFrame(df_np[:, -1:])
     k_folds = 5
     kf = KFold(n_splits=k_folds, shuffle=True, random_state=42)
