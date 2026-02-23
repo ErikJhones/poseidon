@@ -51,7 +51,7 @@ for dataset in ['concrete', 'energy', 'housing', 'power',  'yacht']:
         for fold, (train_idx, val_idx) in enumerate(kf.split(X)):
 
             X_train, X_test = X[train_idx], X[val_idx]
-            y_train, y_test = classe.iloc[train_idx].ravel(), classe.iloc[val_idx].ravel()
+            y_train, y_test = classe.iloc[train_idx].to_numpy().ravel(), classe.iloc[val_idx].to_numpy().ravel()
 
             X_train = pd.DataFrame(X_train)
             X_test = pd.DataFrame(X_test)
