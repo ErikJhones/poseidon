@@ -37,41 +37,44 @@ for dataset in ['concrete', 'energy', 'housing', 'power',  'yacht']:
     classe = pd.DataFrame(df_np[:, -1:])
     k_folds = 5
     kf = KFold(n_splits=k_folds, shuffle=True, random_state=42)
-
+    
     for missing_rate in [0.3,0.5,0.7,0.9]:
         print(missing_rate)
-        scaler = MinMaxScaler()
-        df = scaler.fit_transform(df_np[:, :-1])
-        missing_rate=missing_rate
-        df, mask_df = add_mcar_noise(df, missing_rate, 0)
-        df = pd.DataFrame(df)
-        X = df.values
-
         maes = []
-        for fold, (train_idx, val_idx) in enumerate(kf.split(X)):
+        for seed in  [0, 42, 123, 2025, 6543]:
+        
+            scaler = MinMaxScaler()
+            df = scaler.fit_transform(df_np[:, :-1])
+            missing_rate=missing_rate
+            df, mask_df = add_mcar_noise(df, missing_rate, seed)
+            df = pd.DataFrame(df)
+            X = df.values
 
-            X_train, X_test = X[train_idx], X[val_idx]
-            y_train, y_test = classe.iloc[train_idx].to_numpy().ravel(), classe.iloc[val_idx].to_numpy().ravel()
+            
+            for fold, (train_idx, val_idx) in enumerate(kf.split(X)):
 
-            X_train = pd.DataFrame(X_train)
-            X_test = pd.DataFrame(X_test)
-            start = time.time()
-            reg = TabICLRegressor()
-            reg.fit(X_train, y_train)
-            pred = reg.predict(X_test)
-            end = time.time()
-            elapsed = end - start
-            resultado = mae(y_test, pred)
-            maes.append(resultado)
+                X_train, X_test = X[train_idx], X[val_idx]
+                y_train, y_test = classe.iloc[train_idx].to_numpy().ravel(), classe.iloc[val_idx].to_numpy().ravel()
 
-            peak_gpu = torch.cuda.max_memory_allocated()/1024**3
-            peak_cpu = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024
+                X_train = pd.DataFrame(X_train)
+                X_test = pd.DataFrame(X_test)
+                start = time.time()
+                reg = TabICLRegressor()
+                reg.fit(X_train, y_train)
+                pred = reg.predict(X_test)
+                end = time.time()
+                elapsed = end - start
+                resultado = mae(y_test, pred)
+                maes.append(resultado)
 
-            print("\n========= FINAL STATS =========")
-            print(f"Time: {elapsed/60:.2f} min")
-            print(f"Peak GPU RAM: {peak_gpu:.2f} GB")
-            print(f"Peak CPU RAM: {peak_cpu:.2f} MB")
-            print("===============================")
+                peak_gpu = torch.cuda.max_memory_allocated()/1024**3
+                peak_cpu = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss/1024
+
+                # print("\n========= FINAL STATS =========")
+                # print(f"Time: {elapsed/60:.2f} min")
+                # print(f"Peak GPU RAM: {peak_gpu:.2f} GB")
+                # print(f"Peak CPU RAM: {peak_cpu:.2f} MB")
+                # print("===============================")
 
         print("MAE:", np.mean(maes), np.std(maes))
         
